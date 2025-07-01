@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Byte-compiled / optimized / DLL files
+*.so
+*.egg
+*.egg-info/
+
+# Django
+*.log
+*.pot
+*.pyc
+db.sqlite3
+*.sqlite3
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# Environment variables
+.env
+.env.*
+
+# macOS
+.DS_Store
+
+# IDEs & Editors
+.vscode/
+.idea/
+
+# Test & coverage
+htmlcov/
+.coverage
+.tox/
+.nox/
+
+# Migrations (если не хочешь заливать их)
+**/migrations/*.py
+!**/migrations/__init__.py
