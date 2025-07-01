@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To-Do + Pomodoro</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f9f6f2;
+            color: #333;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #7e6b8f;
+        }
+
+        form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        input, textarea {
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            width: 200px;
+        }
+
+        button {
+            background: #a78bfa;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #7c3aed;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        li {
+            background: white;
+            margin-bottom: 10px;
+            padding: 15px 20px;
+            border-radius: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+
+        li:hover {
+            transform: scale(1.02);
+        }
+
+        .task-text {
+            flex: 1;
+        }
+
+        .actions a {
+            margin-left: 10px;
+            text-decoration: none;
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .complete {
+            color: #10b981;
+        }
+
+        .pomodoro {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        #timer {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .pomodoro-buttons button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌸 My To-Do + Pomodoro</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Task</button>
+    </form>
+
+    <ul>
+        {% for task in tasks %}
+        <li>
+            <div class="task-text">
+                <strong>{{ task.title }}</strong><br>
+                {{ task.description }}
+            </div>
+            <div class="actions">
+                {% if not task.completed %}
+                <a href="{% url 'complete_task' task.id %}" class="complete">✔</a>
+                {% endif %}
+                <a href="{% url 'delete_task' task.id %}">🗑</a>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <div class="pomodoro">
+        <h2>🕒 Pomodoro Timer</h2>
+        <div id="timer">25:00</div>
+        <div class="pomodoro-buttons">
+            <button onclick="startTimer(25)">Start Focus</button>
+            <button onclick="startTimer(5)">Break</button>
+            <button onclick="resetTimer()">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        let timer;
+        let timeLeft = 1500;
+
+        function startTimer(minutes) {
+            clearInterval(timer);
+            timeLeft = minutes * 60;
+            updateTimerDisplay();
+            timer = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    alert("⏰ Time's up!");
+                } else {
+                    timeLeft--;
+                    updateTimerDisplay();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const min = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+            const sec = String(timeLeft % 60).padStart(2, '0');
+            document.getElementById("timer").textContent = `${min}:${sec}`;
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            timeLeft = 1500;
+            updateTimerDisplay();
+        }
+
+        // init
+        updateTimerDisplay();
+    </script>
+</body>
+</html>
+
